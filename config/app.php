@@ -207,8 +207,8 @@ return [
     ],
 
     'socials' => [
-        'whatsapp' => env('COMPANY_WHATSAPP_NUMBER','+1 (208) 571-9001'),
-        'whatsapp_link' => env('COMPANY_WHATSAPP'),
+        'whatsapp' => env('COMPANY_WHATSAPP_NUMBER', '+1 (732) 631-9057'),
+        'whatsapp_link' => 'https://wa.me/17326319057?text=' . urlencode('Hello! I am contacting you from ' . env('APP_NAME') . ' Platform'),
         'instagram'=>env('COMPANY_INSTAGRAM'),
         'linkedin'=>env('COMPANY_LINKEDIN'),
         'twitter'=>env('COMPANY_TWITTER'),      

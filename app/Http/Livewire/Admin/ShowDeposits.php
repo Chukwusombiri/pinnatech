@@ -10,6 +10,7 @@ use App\Mail\RewardDownlineMail;
 use App\Mail\RewardUplineMail;
 use App\Models\Referral;
 use App\Notifications\ReferralIncomeNotification;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -44,48 +45,52 @@ class ShowDeposits extends Component
             return;
         }
 
-        // Mark as approved and save
-        $deposit->isApproved = true;
-        $deposit->save();
+        try {            
+            // Mark as approved and save
+            $deposit->isApproved = true;
+            $deposit->save();
 
-        $user = User::findOrFail($deposit->user_id);
-        $user->acBal += $deposit->amount;
-        $user->acRoi += $deposit->amount;
-        $user->isEarning = true;
+            $user = User::findOrFail($deposit->user_id);
+            $user->acBal += $deposit->amount;
+            $user->acRoi += $deposit->amount;
+            $user->isEarning = true;
 
-        // Assign plan if found
-        $planId = Plan::where('name', $deposit->plan)->value('id');
-        if ($planId) {
-            $user->plan_id = $planId;
-        }
-
-        // Send approval mail to user
-        
-        Mail::to($user->email)->send(new DepositApprovalMail($deposit));
-
-        // Reward upline if this is their first deposit
-        if ($user->upline_id && !$user->hasDeposited) {
-            $reward = ceil($deposit->amount * 0.1);
-
-            $referrer = Referral::where('downline_id', $user->id)->first();
-            if ($referrer && $referrer->user) {
-                $referrer->bonus = $reward;
-                $referrer->save();
-                
-                $upline = $referrer->user;
-                $upline->acRoi += $reward;
-                $upline->refBonus = $reward;
-                $upline->save();
-
-                Mail::to($upline->email)->send(new RewardUplineMail($reward));
+            // Assign plan if found
+            $planId = Plan::where('name', $deposit->plan)->value('id');
+            if ($planId) {
+                $user->plan_id = $planId;
             }
+
+            // Send approval mail to user
+
+            Mail::to($user->email)->send(new DepositApprovalMail($deposit));
+
+            // Reward upline if this is their first deposit
+            if ($user->upline_id && !$user->hasDeposited) {
+                $reward = ceil($deposit->amount * 0.1);
+
+                $referrer = Referral::where('downline_id', $user->id)->first();
+                if ($referrer && $referrer->user) {
+                    $referrer->bonus = $reward;
+                    $referrer->save();
+
+                    $upline = $referrer->user;
+                    $upline->acRoi += $reward;
+                    $upline->refBonus = $reward;
+                    $upline->save();
+
+                    Mail::to($upline->email)->send(new RewardUplineMail($reward));
+                }
+            }
+
+            // Finalize user state
+            $user->hasDeposited = true;
+            $user->save();
+            $this->emit('approvedDeposit');
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            session()->flash('error', 'Oops! Unable to complete operation, contact site engineer');
         }
-
-        // Finalize user state
-        $user->hasDeposited = true;
-        $user->save();
-
-        $this->emit('approvedDeposit');
     }
 
 

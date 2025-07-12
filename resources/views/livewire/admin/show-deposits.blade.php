@@ -4,14 +4,14 @@
             <div class="relative rounded-full w-full h-full border-t-8 border-b-8 border-blue-500 animate-spin"></div>
         </div>
     </div>
-    <div
-        class="p-6 flex justify-between items-center flex-wrap">
+    <div class="p-6 flex justify-between items-center flex-wrap">
         <h4 class="text-lg font-semibold">Deposit history</h4>
-        <a href="{{ route('admin.deposit.create') }}" class="futura-book rounded-full border border border-neutral-900 px-4 py-2 bg-neutral-900 text-gray-100 hover:text-gray-100">
+        <a href="{{ route('admin.deposit.create') }}"
+            class="futura-book rounded-full border border border-neutral-900 px-4 py-2 bg-neutral-900 text-gray-100 hover:text-gray-100">
             create
         </a>
     </div>
-    <x-admin-alert /> 
+    <x-admin-alert />
     {{-- search --}}
     <div class="my-10 w-full px-4 flex items-center">
         <div class="w-full relative border h-12 shadow p-4 rounded-full flex items-center">
@@ -32,9 +32,9 @@
         </div>
     </div>
     {{-- table --}}
-    <div class="flex-auto px-0 pt-0 pb-2">
+    <div class="px-0 pt-0 pb-2">
         <div class="p-0 overflow-x-auto">
-            <table class="items-center w-full mb-0 align-top border-collapse text-slate-500">
+            <table class="min-h-auto items-center w-full mb-0 align-top border-collapse text-slate-500 pb-4">
                 <thead class="align-bottom">
                     <tr>
                         <th
@@ -66,10 +66,11 @@
                             <tr>
                                 <td
                                     class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
-                                     <p class="font-semibold mb-0 text-xs leading-tight text-slate-700">
-                                        {{ $deposit->user->username ?? 'unverified user' }} 
-                                        @if($deposit->user_id!==null)
-                                        <a href="{{ route('admin.user.show', [$deposit->user_id]) }}" class="ml-3 futura-light text-sm underline">click to view</a>
+                                    <p class="font-semibold mb-0 text-xs leading-tight text-slate-700">
+                                        {{ $deposit->user->username ?? 'unverified user' }}
+                                        @if ($deposit->user_id !== null)
+                                            <a href="{{ route('admin.user.show', [$deposit->user_id]) }}"
+                                                class="ml-3 futura-light text-sm underline">click to view</a>
                                         @endif
                                     </p>
                                 </td>
@@ -77,8 +78,7 @@
                                     class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
                                     <div class="flex px-2 py-1">
                                         <div class="flex flex-col justify-center">
-                                            <p
-                                                class="font-semibold mb-0 text-xs leading-tight text-slate-700">
+                                            <p class="font-semibold mb-0 text-xs leading-tight text-slate-700">
                                                 ${{ number_format($deposit->amount) }}</p>
                                         </div>
                                     </div>
@@ -101,8 +101,7 @@
 
                                 <td
                                     class="p-2 text-center align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
-                                    <span
-                                        class="font-serif text-sm font-semibold leading-tight text-slate-700">
+                                    <span class="font-serif text-sm font-semibold leading-tight text-slate-700">
                                         @if ($deposit->isApproved)
                                             <span
                                                 class="futura-book text-emerald-400 bg-emerald-50 p-2 rounded-xl">approved</span>
@@ -112,8 +111,7 @@
                                         @endif
                                     </span>
                                 </td>
-                                <td
-                                    class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
+                                <td class="p-2 align-middle bg-transparent border-b shadow-transparent">
                                     <x-dropdown align="right" width="48">
                                         <x-slot name="trigger">
                                             <button type="button">
@@ -215,5 +213,5 @@
         <div class="p-4">
             {{ $deposits->links() }}
         </div>
-    </div>
+    </div>   
 </div>

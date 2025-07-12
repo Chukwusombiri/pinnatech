@@ -46,6 +46,6 @@
         {{-- custom script --}}       
         @stack('scripts')    
         @livewire('livewire-ui-modal')
-        @livewireScripts        
+        @livewireScripts                
     </body>
 </html>
